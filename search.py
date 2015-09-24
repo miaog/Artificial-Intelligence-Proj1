@@ -112,6 +112,7 @@ def nullHeuristic(state, problem=None):
     goal in the provided SearchProblem.  This heuristic is trivial.
     """
     return 0
+
 good = 0;
 
 def iterativeDeepeningSearch(problem):
@@ -167,24 +168,44 @@ def depthlimitedsearch(problem, a, dept, res, vis, fro, act):
         visited.append(vertex)
     return result
 
+
 def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    frontier = util.PriorityQueue() # Orders nodes by combined cost and heuristic
+    start = problem.getStartState() # Start is the beginning node in the problem
+    frontier.push(start, heuristic(start, problem)) # Put the start node on the frontier
+    node_parent = {} # Tracks where each node came from
+    state_costs = {} # Tracks the total cost of states so far
+    state_costs[start] = 0 # The total cost for the start node is 0
+    state_action = {} # This maps a state to an action that produced the state
+    final_path = [] # This is the list of actions that we return at the end
+    
+    while frontier.isEmpty() == False:
+        state = frontier.pop()
+        if problem.goalTest(state):
+            this_action = state_action[state]
+            final_path.append(this_action)
+            previous = node_parent[state];
+            while previous != start:
+                this_action = state_action[previous]
+                final_path.append(this_action)
+                previous = node_parent[previous];
+            final_path = final_path[::-1]
+            return final_path
+        for action in problem.getActions(state):
+            resulting_state = problem.getResult(state, action)
+            g = state_costs[state] + problem.getCost(state, action)
+            if resulting_state not in state_costs or g < state_costs[resulting_state]:
+                h = heuristic(resulting_state, problem)
+                f = g + h
+                frontier.push(resulting_state, f)
+                state_costs[resulting_state] = g
+                node_parent[resulting_state] = state
+                state_action[resulting_state] = action
 
+    
+    
 # Abbreviations
 bfs = breadthFirstSearch
 astar = aStarSearch
 ids = iterativeDeepeningSearch
-
-
-
-
-
-
-
-
-
-
-
-
