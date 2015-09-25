@@ -103,8 +103,31 @@ def breadthFirstSearch(problem):
 
     You are not required to implement this, but you may find it useful for Q5.
     """
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    visited = []
+    result = []
+    fronteir = util.Queue()
+    fall = []
+    result = [[]]
+    a = problem.getStartState()
+    fr = [a]
+    fronteir.push([a, []])
+
+    while not fronteir.isEmpty():
+        vertex, r = fronteir.pop()
+
+        # print vertex
+        if (problem.goalTest(vertex)):
+            return r
+        for action in problem.getActions(vertex):
+            child = problem.getResult(vertex, action)
+            if (child not in fr):
+                if (child not in visited):
+                    if (problem.goalTest(child)):
+                        return r + [action]
+                    fronteir.push([child, r + [action]])
+                    fr.append(child)
+        visited.append(vertex)
+    return []
 
 def nullHeuristic(state, problem=None):
     """
@@ -185,7 +208,7 @@ def aStarSearch(problem, heuristic=nullHeuristic):
         if problem.goalTest(state):
             this_action = state_action[state]
             final_path.append(this_action)
-            previous = node_parent[state];
+            previous = node_parent[state]; 
             while previous != start:
                 this_action = state_action[previous]
                 final_path.append(this_action)
@@ -203,8 +226,6 @@ def aStarSearch(problem, heuristic=nullHeuristic):
                 node_parent[resulting_state] = state
                 state_action[resulting_state] = action
 
-    
-    
 # Abbreviations
 bfs = breadthFirstSearch
 astar = aStarSearch
