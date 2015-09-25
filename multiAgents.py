@@ -72,9 +72,24 @@ class ReflexAgent(Agent):
         newFood = successorGameState.getFood()
         newGhostStates = successorGameState.getGhostStates()
         newScaredTimes = [ghostState.scaredTimer for ghostState in newGhostStates]
+        manhattan_distances = []
+        current_food = currentGameState.getFood()
+        list_of_current_food = current_food.asList() # asList() is a grid function in game.py
 
-        "*** YOUR CODE HERE ***"
-        return successorGameState.getScore()
+        # Running into an unscared ghost is a bad move
+        for new_ghost_state in newGhostStates:
+            ghost_position = new_ghost_state.getPosition()
+            if newPos == ghost_position: 
+                if newScaredTimes[0] == 0:
+                  return -999999
+        # Stopping is a bad move
+        if action == 'Stop':
+            return -999999
+        for food in list_of_current_food:
+            manhattan_distance = util.manhattanDistance(newPos, food)
+            manhattan_distances.append(-1 * manhattan_distance)
+        evaluation = max(manhattan_distances)
+        return evaluation
 
 def scoreEvaluationFunction(currentGameState):
     """
