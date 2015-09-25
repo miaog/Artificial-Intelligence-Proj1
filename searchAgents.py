@@ -316,7 +316,6 @@ class CornersProblem(search.SearchProblem):
         else:
             return False
 
-
     def getActions(self, state):
         """
         Given a state, returns available actions.
@@ -425,6 +424,7 @@ class FoodSearchProblem:
       pacmanPosition: a tuple (x,y) of integers specifying Pacman's position
       foodGrid:       a Grid (see game.py) of either True or False, specifying remaining food
     """
+    first = True
     def __init__(self, startingGameState):
         self.start = (startingGameState.getPacmanPosition(), startingGameState.getFood())
         self.walls = startingGameState.getWalls()
@@ -530,8 +530,13 @@ def foodHeuristic(state, problem):
     problem.heuristicInfo['wallCount']
     """
     position, foodGrid = state
-    "*** YOUR CODE HERE ***"
-    return 0
+    foods = foodGrid.asList()
+    if len(foods) == 0:
+        return 0
+    dist = -float("inf")
+    for food in foods:
+        dist = max(dist, mazeDistance(position, food, problem.startingGameState))
+    return dist
 
 def mazeDistance(point1, point2, gameState):
     """
